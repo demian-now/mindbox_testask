@@ -1,0 +1,59 @@
+Абсолютно непонятно, как построена база данных.
+Задание: 
+В базе данных MS SQL Server есть продукты и категории. Одному продукту может соответствовать много категорий, в одной категории может быть много продуктов. Напишите SQL запрос для выбора всех пар «Имя продукта – Имя категории». Если у продукта нет категорий, то его имя все равно должно выводиться.
+
+> В базе данных MS SQL Server есть продукты и категории.
+Отдельная таблица продуктов и отдельная таблица категорий? Или таблица продукты + все её категории, а в другой категории + все её продукты? Для решения этого задания нужно больше подробностей про устройство таблицы.
+
+Я понимаю, что в данном случае описывается отношение многие-ко-многим, но в таком случае должно быть либо представление, либо отдельная таблица, где эта связь уже обозначена.
+В случае, если существует три таблицы:
+
+Products (ProductID, ProductName)
+
+ProductID   ProductName
+----------- ------------------------------
+1           Ice Cream                     
+2           Water                         
+3           Potato                        
+4           MilkShake                     
+5           Cocktail                      
+6           Oil                           
+
+Category (CategoryID, CategoryName)
+
+CategoryID  CategoryName
+----------- ------------------------------
+1           Milk                          
+2           Drink                         
+3           Eat  
+
+Pairs (ProdID, CatID)                         
+
+ProductID   CategoryID
+----------- -----------
+1           1
+1           3
+2           2
+4           1
+4           2
+5           1
+5           2
+
+То запрос будет такой: 
+
+SELECT ProductName, CategoryName
+FROM Products LEFT JOIN Pairs ON Products.ProductID = Pairs.ProductID LEFT JOIN Category ON Category.CategoryID = Pairs.CategoryID
+
+И результат такой: 
+
+ProductName                    CategoryName
+------------------------------ ------------------------------
+Ice Cream                      Milk                          
+Ice Cream                      Eat                           
+Water                          Drink                         
+Potato                         NULL
+MilkShake                      Milk                          
+MilkShake                      Drink                         
+Cocktail                       Milk                          
+Cocktail                       Drink                         
+Oil                            NULL
